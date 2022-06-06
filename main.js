@@ -6,15 +6,24 @@ const CHARACTER_HEIGHT = 42;
 const FPS = 60;
 const LOOP_INTERVAL = Math.round(1000 / FPS);
 const VELOCITY = 2.5;
+const CACTUS_SIZES = {
+  0: 32,
+  1: 48,
+  2: 64,
+};
+
 
 
 const $character = $('#character');
 const $cactus = $('#cactus');
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground of in the sky
-let expVelocity = 5.5;
+let parabolaVelocity = 5.5;
 
-// Dummy obsticle
+// Iteration of obstacle ID's to keep a track on which elements to be removed once they come out of the screen
+let obstacleId=0;
+
+// Dummy obstacle
 let cactus = {
   position: {
     y: 70,
@@ -22,6 +31,41 @@ let cactus = {
   },
   movement: true
 };
+
+// Class template for obstacles
+class Obstacle {
+  constructor (type){
+    this.type = type;
+  };
+
+  static initialXAxis(){
+    if(this.type === 'cactus'){
+      return 70;
+    }else if(this.type === 'cloud'){
+      // TODO
+    }else if(this.type === 'ufo'){
+      // TODO
+    };
+  };
+
+  static cactusSize(){
+    if(this.type==='cactus'){
+      return randomSize = Math.random(Math.floor()*(2-0)+0);
+    }else if(this.type === 'cloud'){
+      return 32;
+    }else if(this.type === 'ufo'){
+      return 48;
+    };
+  };
+
+  static y = 70
+  static speed = this.type === 'ufo' ? 1.5 : 1;
+  static id = obstacleId++
+  static x = -100;
+  static size = this.cactusSize()
+}
+
+const cactus1 = Obstacle()
 
 // Primary values for the character - y position and movement status
 let character = {
@@ -67,9 +111,9 @@ const updateMovements = () => {
   let newY = y;
 
   if (!down && up && newY < 205) {
-    // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease exponential jumping speed
-    expVelocity -= 0.20;
-    newY += (expVelocity + VELOCITY)
+    // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease parabola cure jumping speed
+    parabolaVelocity -= 0.20;
+    newY += (parabolaVelocity + VELOCITY)
   }else if (!down && newY >= 205) {
     // Verify if y trajectory has reached its maximum height to stall the character temporarily midair, then set character for downwards trajectory
     newY = 205;
@@ -77,9 +121,9 @@ const updateMovements = () => {
       character.movement.down = true;
     }, 50);
   }else if(down && up && y>70) {
-    // Should the character be on the downwards trajectory, update the y trajectory and increase exponential falling speed.
-    expVelocity += 0.20;
-    newY -= (expVelocity + VELOCITY);
+    // Should the character be on the downwards trajectory, update the y trajectory and increase parabola cure falling speed.
+    parabolaVelocity += 0.20;
+    newY -= (parabolaVelocity + VELOCITY);
   } else if(down && up && newY <= 70){
     // Should the character be on the ground level, whilst he upwards and downwards trajectories are both active means the characters has completed round trip, hence all of the initial values get reset into original values.
     newY = 70;
