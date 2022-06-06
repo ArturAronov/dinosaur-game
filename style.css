@@ -1,4 +1,18 @@
-#dinosaur{
+body{
+  overflow-x: hidden;
+}
+
+#game-screen{
+  left: 50%;
+  transform: translateX(-50%);
+  position: relative;
+  height: 388px;
+  width: 700px;
+  background-color: gray;
+}
+
+#character{
+  position: absolute;
   display: inline-block;
   font-size: 32px;
   -moz-transform: scale(-1, 1);
@@ -6,4 +20,12 @@
   -o-transform: scale(-1, 1);
   -ms-transform: scale(-1, 1);
   transform: scale(-1, 1);
+
+  bottom: 70px;
+  left: 30px;
+}
+
+#cactus{
+  position: absolute;
+  font-size: 48px
 }
