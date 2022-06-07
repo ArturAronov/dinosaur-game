@@ -36,36 +36,42 @@ let cactus = {
 class Obstacle {
   constructor (type){
     this.type = type;
+    this.y = this.initialYAxis();
+    this.speed = this.type === 'ufo' ? 1.5 : 1;
+    this.id = this.setAndUpdateObstacleId();
+    this.x = -100;
+    this.size = this.obstacleSize();
   };
 
-  static initialXAxis(){
+  setAndUpdateObstacleId(){
+    obstacleId+=1;
+    return obstacleId;
+  };
+
+  initialYAxis(){
     if(this.type === 'cactus'){
       return 70;
     }else if(this.type === 'cloud'){
-      // TODO
+      return Math.floor(Math.random()*(295-205)+205);
     }else if(this.type === 'ufo'){
-      // TODO
+      return Math.floor(Math.random()*(155-85)+85);
     };
   };
 
-  static cactusSize(){
+  obstacleSize(){
     if(this.type==='cactus'){
-      return randomSize = Math.random(Math.floor()*(2-0)+0);
+      const randomSize = Math.floor(Math.random()*(3-0)+0);
+      return CACTUS_SIZES[randomSize];
     }else if(this.type === 'cloud'){
       return 32;
     }else if(this.type === 'ufo'){
       return 48;
     };
   };
+};
 
-  static y = 70
-  static speed = this.type === 'ufo' ? 1.5 : 1;
-  static id = obstacleId++
-  static x = -100;
-  static size = this.cactusSize()
-}
-
-const cactus1 = Obstacle()
+const obstaclesArr = [new Obstacle('ufo'), new Obstacle('cactus')]
+console.log(obstaclesArr[1].size)
 
 // Primary values for the character - y position and movement status
 let character = {
