@@ -1,5 +1,6 @@
 body{
   overflow-x: hidden;
+  margin: 0;
 }
 
 #game-screen{
@@ -14,7 +15,7 @@ body{
 #character{
   position: absolute;
   display: inline-block;
-  font-size: 32px;
+  font-size: 48px;
   -moz-transform: scale(-1, 1);
   -webkit-transform: scale(-1, 1);
   -o-transform: scale(-1, 1);
@@ -25,7 +26,9 @@ body{
   left: 30px;
 }
 
-#cactus{
+.obstacle{
   position: absolute;
-  font-size: 48px
+  font-size: 48px;
+  margin: 0;
+  padding: 0;
 }

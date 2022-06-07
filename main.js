@@ -12,10 +12,8 @@ const CACTUS_SIZES = {
   2: 64,
 };
 
-
-
+const $gameScreen = $('#game-screen');
 const $character = $('#character');
-const $cactus = $('#cactus');
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground of in the sky
 let parabolaVelocity = 5.5;
@@ -23,29 +21,60 @@ let parabolaVelocity = 5.5;
 // Iteration of obstacle ID's to keep a track on which elements to be removed once they come out of the screen
 let obstacleId=0;
 
-// Dummy obstacle
-let cactus = {
-  position: {
-    y: 70,
-    x: -100,
-  },
-  movement: true
-};
+// Array of all obstacles
+let cactusArr = [];
+let ufoArr = [];
+let cloudArr = [];
+let obstaclesArr = [];
 
 // Class template for obstacles
 class Obstacle {
   constructor (type){
-    this.type = type;
-    this.y = this.initialYAxis();
-    this.speed = this.type === 'ufo' ? 1.5 : 1;
     this.id = this.setAndUpdateObstacleId();
+    this.type = type;
+    this.speed = this.setSpeed()
+    this.elementMovement = true;
     this.x = -100;
+    this.y = this.initialYAxis();
     this.size = this.obstacleSize();
+    this.emoji = this.setEmoji();
+    this.$elem = $(`<div class="obstacle">${this.emoji}</div>`);
+
+    this.append()
   };
+
+  setSpeed() {
+    if (this.type === 'ufo') {
+      return 1.5;
+    } else if (this.type === 'cloud'){
+      return 0.75;
+    } else {
+      return 1;
+    };
+  };
+
+  append() {
+    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('right', this.x).css('font-size', this.size)
+  }
 
   setAndUpdateObstacleId(){
     obstacleId+=1;
     return obstacleId;
+  };
+
+  updateX(){
+    this.x = (VELOCITY + this.speed) + this.x
+    return this.x;
+  };
+
+  setEmoji(){
+    if(this.type === 'ufo'){
+      return '🛸';
+    }else if(this.type === 'cactus'){
+      return '🌵';
+    } else if(this.type === 'cloud'){
+      return '☁️';
+    };
   };
 
   initialYAxis(){
@@ -68,10 +97,23 @@ class Obstacle {
       return 48;
     };
   };
-};
 
-const obstaclesArr = [new Obstacle('ufo'), new Obstacle('cactus')]
-console.log(obstaclesArr[1].size)
+  obstacleMovement(){
+    // let obstaclePosition = {
+    //   position: {
+    //     yAxis: this.y,
+    //     xAxis: this.x,
+    //   },
+    //   movement: this.elementMovement
+    // };
+
+    this.$elem.css('right', this.updateX())
+
+    if(this.x>700){
+      this.$elem.remove()
+    }
+  }
+};
 
 // Primary values for the character - y position and movement status
 let character = {
@@ -84,19 +126,13 @@ let character = {
   }
 };
 
-
-const setCharacterMovement = (value, keyCode) => {
-  // Should user press space bar or arrow up button, the condition below will get executed.
-  if(keyCode === 38 || keyCode === 32){
-    character.movement.up = value;
-  };
-};
-
-
 // Logic handlers for key up and down
+// Should user press space bar or arrow up button, the condition below will get executed.
 const handleKeyDown = e => {
   const {keyCode} = e;
-  setCharacterMovement(true, e.keyCode);
+  if(keyCode === 38 || keyCode === 32){
+    character.movement.up = true;
+  };
 };
 
 const handleKeyUp = () => {
@@ -120,35 +156,89 @@ const updateMovements = () => {
     // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease parabola cure jumping speed
     parabolaVelocity -= 0.20;
     newY += (parabolaVelocity + VELOCITY)
-  }else if (!down && newY >= 205) {
+  } else if (!down && newY >= 205) {
     // Verify if y trajectory has reached its maximum height to stall the character temporarily midair, then set character for downwards trajectory
     newY = 205;
     setTimeout(()=>{
       character.movement.down = true;
     }, 50);
-  }else if(down && up && y>70) {
+  } else if (down && up && y>70) {
     // Should the character be on the downwards trajectory, update the y trajectory and increase parabola cure falling speed.
     parabolaVelocity += 0.20;
     newY -= (parabolaVelocity + VELOCITY);
-  } else if(down && up && newY <= 70){
+  } else if (down && up && newY <= 70) {
     // Should the character be on the ground level, whilst he upwards and downwards trajectories are both active means the characters has completed round trip, hence all of the initial values get reset into original values.
     newY = 70;
     character.movement.up = false;
     character.movement.down = false;
   };
 
-
-  // Dummy obsticle movement on the screen.
-  if(cactus.movement){
-    let cactusNewX = cactus.position.x+=3
-    $cactus.css('right', cactusNewX);
-  };
-  $cactus.css('bottom', cactus.position.y);
-
   // CSS updates for character coordinates.
   character.position.y = newY;
   $character.css('bottom', newY);
+
+  /*
+    OBSTACLE OBJECT FUNCTION THAT MOVES THE ITEM ACROSS THE SCREEN GOES 'ERE!
+  */
+/*   cactusArr.forEach((element) => {
+    element.obstacleMovement()
+    //console.log(element.x)
+    if(element.x>700){
+      cloudArr.shift()
+    }
+  })
+
+  ufoArr.forEach((element) => {
+    element.obstacleMovement()
+    //console.log(element.x)
+    if(element.x>700){
+      cloudArr.shift()
+    } */
+
+    obstaclesArr.forEach((element) => {
+    element.obstacleMovement()
+    console.log(obstaclesArr.length)
+    //console.log(element.x)
+    if(element.x>700){
+      obstaclesArr.shift()
+    }
+  })
+
+
+  /*
+    AFTER ALL MOVEMENTS, CHECK FOR COLLISION
+  */
 };
+
+const randomInterval = () => {
+  return Math.floor(Math.random()*(3000-1000)+1000)
+};
+
+function addCactus(){
+  cactusArr.push(new Obstacle('cactus'));
+  setTimeout(addCactus, randomInterval())
+};
+
+function addUfo(){
+  ufoArr.push(new Obstacle('ufo'));
+  setTimeout(addUfo, randomInterval())
+};
+
+function addObstacles(){
+
+  let randomObstacle
+  if(randomInterval()<2000){
+    randomObstacle = new Obstacle('ufo');
+  } else {
+    randomObstacle = new Obstacle('cactus');
+  }
+  console.log(randomObstacle)
+
+  obstaclesArr.push(randomObstacle);
+  setTimeout(addObstacles, randomInterval())
+};
+
+
 
 const init = () => {
   // Event listener for the jumping command
@@ -156,6 +246,19 @@ const init = () => {
 
   // Main game engine.
   gameLoop = setInterval(updateMovements, LOOP_INTERVAL);
+
+  addObstacles()
+
+/*   // TODO: tbr
+  setInterval(function(){
+    obstacles.push(new Obstacle('cactus'));
+  }, randomInterval());
+
+  setInterval(function(){
+    obstacles.push(new Obstacle('ufo'));
+  }, randomInterval());
+ */
+
 };
 
 init();
