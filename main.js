@@ -19,11 +19,8 @@ const $score = $('#score');
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground of in the sky
 let parabolaVelocity = 5.5;
 
-// Array of all obstacles
-let cactusArr = [];
-let ufoArr = [];
-let cloudArr = [];
-let obstaclesArr = [];
+// Obstacle objects will be stored here eventually for the duration of screen time
+const obstaclesArr = [];
 
 
 // User score
@@ -41,10 +38,12 @@ class Obstacle {
     this.emoji = this.setEmoji();
     this.$elem = $(`<div class="obstacle">${this.emoji}</div>`);
 
+    // Appends the div into HTML
     this.append()
   };
 
   setSpeed() {
+    // Gives each obstacle type a moving speed
     if (this.type === 'ufo') {
       return 1.5;
     } else if (this.type === 'cloud'){
@@ -55,15 +54,18 @@ class Obstacle {
   };
 
   append() {
+    // Appends new object into the HTML and updates the CSS values
     this.$elem.appendTo($gameScreen).css('bottom', this.y).css('right', this.x).css('font-size', this.size)
   }
 
   updateX(){
+    // Moves the obstacle on the x axis
     this.x = (VELOCITY * this.speed) + this.x
     return this.x;
   };
 
   setEmoji(){
+    // Obstacle image
     if(this.type === 'ufo'){
       return '🛸';
     }else if(this.type === 'cactus'){
@@ -74,6 +76,7 @@ class Obstacle {
   };
 
   initialYAxis(){
+    // Gives each object the y axis
     if(this.type === 'cactus'){
       return 70;
     }else if(this.type === 'cloud'){
@@ -84,6 +87,7 @@ class Obstacle {
   };
 
   obstacleSize(){
+    // Gives each object its size
     if(this.type==='cactus'){
       const randomSize = Math.floor(Math.random()*(3-0)+0);
       return CACTUS_SIZES[randomSize];
@@ -103,8 +107,10 @@ class Obstacle {
     //   movement: this.elementMovement
     // };
 
+    // Moves object on the y axis
     this.$elem.css('right', this.updateX())
 
+    // Removes object from the HTML should it get out of screen
     if(this.x>666){
       this.$elem.remove()
     }
@@ -122,7 +128,7 @@ let character = {
   }
 };
 
-// Logic handlers for key up and down
+
 // Should user press space bar or arrow up button, the condition below will get executed.
 const handleKeyDown = e => {
   const {keyCode} = e;
@@ -173,34 +179,22 @@ const updateMovements = () => {
   character.position.y = newY;
   $character.css('bottom', newY);
 
-  /*
-    OBSTACLE OBJECT FUNCTION THAT MOVES THE ITEM ACROSS THE SCREEN GOES 'ERE!
-  */
-/*   cactusArr.forEach((element) => {
-    element.obstacleMovement()
-    //console.log(element.x)
-    if(element.x>700){
-      cloudArr.shift()
-    }
-  })
+  // Loops over the obstaclesArr array to modify the obstacle objects
+  obstaclesArr.forEach((element, index) => {
 
-  ufoArr.forEach((element) => {
-    element.obstacleMovement()
-    //console.log(element.x)
-    if(element.x>700){
-      cloudArr.shift()
-    } */
+    // This will move the object on the x axis from right to left
+    element.obstacleMovement();
 
-    obstaclesArr.forEach((element, index) => {
-      element.obstacleMovement();
-      if (element.x > 666) {
-        element.type!=='cloud'&&userScore++;
-        obstaclesArr.splice(index, 1);
-      };
+    // This condition verifies if object is about to leave the screen, in which case it will be removed from the obstaclesArr array and score gets incremented by 1
+    if (element.x > 666) {
+      element.type!=='cloud'&&userScore++;
+      obstaclesArr.splice(index, 1);
+    };
 
-      const scoreStr = userScore.toString().padStart(5, '0');
-      $score.text(scoreStr);
-    });
+    // Prints the score on to the screen given the 5 digit format with leading zeros, such as 00088
+    const scoreStr = userScore.toString().padStart(5, '0');
+    $score.text(scoreStr);
+  });
 
 
 
@@ -213,28 +207,16 @@ const randomInterval = () => {
   return Math.floor(Math.random()*(3000-1000)+1000)
 };
 
-function addCactus(){
-  cactusArr.push(new Obstacle('cactus'));
-  setTimeout(addCactus, randomInterval())
-};
-
-function addUfo(){
-  ufoArr.push(new Obstacle('ufo'));
-  setTimeout(addUfo, randomInterval())
-};
-
+// Function that creates new Obstacle and pushes them into the obstacleArr array
 function addObstacles(){
-
-  let randomObstacle
-  if(randomInterval()<2000){
-    randomObstacle = new Obstacle('ufo');
-  } else {
-    randomObstacle = new Obstacle('cactus');
-  };
+  // Decide whether it's ufo or cactus that gets created, depending on random number generated form randomInterval function
+  const randomObstacle = randomInterval()<2000 ? new Obstacle('ufo') : new Obstacle('cactus')
 
   obstaclesArr.push(randomObstacle);
   obstaclesArr.push(new Obstacle('cloud'));
-  setTimeout(addObstacles, randomInterval())
+
+  // setTimeout function that creates infinite loop in order to generate new number value in randomInterval function so that obstacles come out at different times
+  setTimeout(addObstacles, randomInterval());
 };
 
 
@@ -246,18 +228,7 @@ const init = () => {
   // Main game engine.
   gameLoop = setInterval(updateMovements, LOOP_INTERVAL);
 
-  addObstacles()
-
-/*   // TODO: tbr
-  setInterval(function(){
-    obstacles.push(new Obstacle('cactus'));
-  }, randomInterval());
-
-  setInterval(function(){
-    obstacles.push(new Obstacle('ufo'));
-  }, randomInterval());
- */
-
+  addObstacles();
 };
 
 init();
