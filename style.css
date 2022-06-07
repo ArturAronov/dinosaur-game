@@ -1,10 +1,10 @@
-body{
+body {
   overflow-x: hidden;
   margin: 0;
   user-select: none;
 }
 
-#game-screen{
+#game-screen {
   top: 50%;
   left: 50%;
   transform: translate(-50%, 50%);
@@ -14,7 +14,7 @@ body{
   background-color: gray;
 }
 
-#character{
+#character {
   position: absolute;
   display: inline-block;
   font-size: 48px;
@@ -28,7 +28,7 @@ body{
   left: 30px;
 }
 
-.obstacle{
+.obstacle {
   position: absolute;
   font-size: 48px;
   margin: 0;
