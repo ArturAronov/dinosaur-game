@@ -26,6 +26,8 @@ body {
 
   bottom: 70px;
   left: 30px;
+  border: 1px solid black;
+  line-height: 100%;
 }
 
 .obstacle {
@@ -33,6 +35,18 @@ body {
   font-size: 48px;
   margin: 0;
   padding: 0;
+  border: 1px solid black;
+
+  /* Since there is a some amount of spacing around letters, the lines below are intended to remove all of the excess spacing */
+  line-height: 100%;
+  margin-left: -0.5em;
+  letter-spacing: -0.1em;
+  text-align: center;
+  text-indent: -0.1em;
+}
+
+.ufo{
+  line-height: 60%;
 }
 
 #header {

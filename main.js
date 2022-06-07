@@ -36,7 +36,7 @@ class Obstacle {
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
-    this.$elem = $(`<div class="obstacle">${this.emoji}</div>`);
+    this.$elem = $(`<div class="obstacle ${this.type==='ufo'&&'ufo'}">${this.emoji}</div>`);
 
     // Appends the div into HTML
     this.append()
