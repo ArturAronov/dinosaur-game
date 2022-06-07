@@ -14,12 +14,10 @@ const CACTUS_SIZES = {
 
 const $gameScreen = $('#game-screen');
 const $character = $('#character');
+const $score = $('#score');
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground of in the sky
 let parabolaVelocity = 5.5;
-
-// Iteration of obstacle ID's to keep a track on which elements to be removed once they come out of the screen
-let obstacleId=0;
 
 // Array of all obstacles
 let cactusArr = [];
@@ -27,14 +25,17 @@ let ufoArr = [];
 let cloudArr = [];
 let obstaclesArr = [];
 
+
+// User score
+let userScore = 0;
+
 // Class template for obstacles
 class Obstacle {
   constructor (type){
-    this.id = this.setAndUpdateObstacleId();
     this.type = type;
     this.speed = this.setSpeed()
     this.elementMovement = true;
-    this.x = -100;
+    this.x = -400;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
@@ -57,13 +58,8 @@ class Obstacle {
     this.$elem.appendTo($gameScreen).css('bottom', this.y).css('right', this.x).css('font-size', this.size)
   }
 
-  setAndUpdateObstacleId(){
-    obstacleId+=1;
-    return obstacleId;
-  };
-
   updateX(){
-    this.x = (VELOCITY + this.speed) + this.x
+    this.x = (VELOCITY * this.speed) + this.x
     return this.x;
   };
 
@@ -109,7 +105,7 @@ class Obstacle {
 
     this.$elem.css('right', this.updateX())
 
-    if(this.x>700){
+    if(this.x>666){
       this.$elem.remove()
     }
   }
@@ -195,14 +191,17 @@ const updateMovements = () => {
       cloudArr.shift()
     } */
 
-    obstaclesArr.forEach((element) => {
-    element.obstacleMovement()
-    console.log(obstaclesArr.length)
-    //console.log(element.x)
-    if(element.x>700){
-      obstaclesArr.shift()
-    }
-  })
+    obstaclesArr.forEach((element, index) => {
+      element.obstacleMovement();
+      if (element.x > 666) {
+        userScore++;
+        obstaclesArr.splice(index, 1);
+      };
+
+      const scoreStr = userScore.toString().padStart(5, '0');
+      $score.children().text(scoreStr);
+    });
+
 
 
   /*
@@ -231,10 +230,10 @@ function addObstacles(){
     randomObstacle = new Obstacle('ufo');
   } else {
     randomObstacle = new Obstacle('cactus');
-  }
-  console.log(randomObstacle)
+  };
 
   obstaclesArr.push(randomObstacle);
+  obstaclesArr.push(new Obstacle('cloud'));
   setTimeout(addObstacles, randomInterval())
 };
 

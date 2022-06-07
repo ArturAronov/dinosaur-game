@@ -4,8 +4,9 @@ body{
 }
 
 #game-screen{
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 50%);
   position: relative;
   height: 388px;
   width: 700px;
@@ -31,4 +32,20 @@ body{
   font-size: 48px;
   margin: 0;
   padding: 0;
+}
+
+#score {
+  position: absolute;
+  width: 250px;
+  height: 80px;
+  right: 0;
+  top: 0;
+}
+
+#score>div {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', cursive;
 }
