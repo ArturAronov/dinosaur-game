@@ -35,7 +35,7 @@ class Obstacle {
     this.type = type;
     this.speed = this.setSpeed()
     this.elementMovement = true;
-    this.x = -400;
+    this.x = -100;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
@@ -48,7 +48,7 @@ class Obstacle {
     if (this.type === 'ufo') {
       return 1.5;
     } else if (this.type === 'cloud'){
-      return 0.75;
+      return 0.5;
     } else {
       return 1;
     };
@@ -194,12 +194,12 @@ const updateMovements = () => {
     obstaclesArr.forEach((element, index) => {
       element.obstacleMovement();
       if (element.x > 666) {
-        userScore++;
+        element.type!=='cloud'&&userScore++;
         obstaclesArr.splice(index, 1);
       };
 
       const scoreStr = userScore.toString().padStart(5, '0');
-      $score.children().text(scoreStr);
+      $score.text(scoreStr);
     });
 
 

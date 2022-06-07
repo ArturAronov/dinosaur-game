@@ -1,6 +1,7 @@
 body{
   overflow-x: hidden;
   margin: 0;
+  user-select: none;
 }
 
 #game-screen{
@@ -34,18 +35,25 @@ body{
   padding: 0;
 }
 
-#score {
-  position: absolute;
-  width: 250px;
-  height: 80px;
+#header {
+  position:absolute;
   right: 0;
-  top: 0;
+  height: 70px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Press Start 2P', cursive;
+  gap: 18px
 }
 
-#score>div {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Press Start 2P', cursive;
+#message{
+  font-size: 10px;
 }
+
+
+
+
+
+/* font-family: 'Press Start 2P', cursive; */
