@@ -18,6 +18,8 @@ body {
   position: absolute;
   display: inline-block;
   font-size: 48px;
+
+  /* Flips the dinosaur horizontally due to original emoji is facing wrong direction */
   -moz-transform: scale(-1, 1);
   -webkit-transform: scale(-1, 1);
   -o-transform: scale(-1, 1);
@@ -26,7 +28,6 @@ body {
 
   bottom: 70px;
   left: 30px;
-  border: 1px solid black;
   line-height: 100%;
 }
 
@@ -35,7 +36,7 @@ body {
   font-size: 48px;
   margin: 0;
   padding: 0;
-  border: 1px solid black;
+
 
   /* Since there is a some amount of spacing around letters, the lines below are intended to remove all of the excess spacing */
   line-height: 100%;
@@ -51,7 +52,7 @@ body {
 }
 
 #header {
-  position:absolute;
+  position: absolute;
   right: 0;
   height: 70px;
   width: 300px;
@@ -69,6 +70,31 @@ body {
 
 
 
+/*
 
 
+BACKGROUND ANIMATION
+
+
+
+@keyframes animatedBackground {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 100% 0;
+  }
+}
+
+#animate-area {
+  width: 200px;
+  height: 200px;
+  background-image: url(http://placekitten.com/400/200);
+  background-position: 0px 0px;
+  background-repeat: repeat-x;
+  animation: animatedBackground 10s linear infinite;
+}
+
+ */
 /* font-family: 'Press Start 2P', cursive; */

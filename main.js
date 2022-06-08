@@ -7,16 +7,16 @@ const FPS = 60;
 const LOOP_INTERVAL = Math.round(1000 / FPS);
 const VELOCITY = 2.5;
 const CACTUS_SIZES = {
-  0: 32,
-  1: 48,
-  2: 64,
+  0: 30,
+  1: 45,
+  2: 40,
 };
 
 const $gameScreen = $('#game-screen');
 const $character = $('#character');
 const $score = $('#score');
 
-// Character's jumping velocity acceleration / deceleration depending whether the character is on the ground of in the sky
+// Character's jumping velocity acceleration / deceleration depending whether the character is on the ground or in the air
 let parabolaVelocity = 5.5;
 
 // Obstacle objects will be stored here eventually for the duration of screen time
@@ -32,14 +32,17 @@ class Obstacle {
     this.type = type;
     this.speed = this.setSpeed()
     this.elementMovement = true;
-    this.x = -100;
+    this.x = 800;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
     this.$elem = $(`<div class="obstacle ${this.type==='ufo'&&'ufo'}">${this.emoji}</div>`);
 
     // Appends the div into HTML
-    this.append()
+    this.append();
+
+    this.width = Math.floor(this.$elem.width());
+    this.height = Math.floor(this.$elem.height());
   };
 
   setSpeed() {
@@ -55,12 +58,12 @@ class Obstacle {
 
   append() {
     // Appends new object into the HTML and updates the CSS values
-    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('right', this.x).css('font-size', this.size)
+    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('left', this.x).css('font-size', this.size)
   }
 
   updateX(){
     // Moves the obstacle on the x axis
-    this.x = (VELOCITY * this.speed) + this.x
+    this.x = this.x - (VELOCITY * this.speed);
     return this.x;
   };
 
@@ -98,29 +101,25 @@ class Obstacle {
     };
   };
 
-  obstacleMovement(){
-    // let obstaclePosition = {
-    //   position: {
-    //     yAxis: this.y,
-    //     xAxis: this.x,
-    //   },
-    //   movement: this.elementMovement
-    // };
 
+  obstacleMovement(){
     // Moves object on the y axis
-    this.$elem.css('right', this.updateX())
+    this.$elem.css('left', this.updateX());
 
     // Removes object from the HTML should it get out of screen
-    if(this.x>666){
-      this.$elem.remove()
-    }
-  }
+    if(this.x<5){
+      this.$elem.remove();
+    };
+  };
 };
 
 // Primary values for the character - y position and movement status
 let character = {
   position: {
     y: 70,
+    x: 30,
+    height: CHARACTER_HEIGHT,
+    width: CHARACTER_WIDTH,
   },
   movement: {
     up: false,
@@ -144,7 +143,12 @@ const handleKeyUp = () => {
 const updateMovements = () => {
   // Character's object destructured
   const {
-    position: {y},
+    position: {
+      y,
+      x,
+      width,
+      height,
+    },
     movement: {
       up,
       down
@@ -185,8 +189,17 @@ const updateMovements = () => {
     // This will move the object on the x axis from right to left
     element.obstacleMovement();
 
+    // Collision logic
+    if (x < element.x + element.width &&
+        x + width > element.x &&
+        y < element.y + element.height &&
+        height + y > element.y &&
+        element.type !== 'cloud'){
+          console.log('oops');
+      };
+
     // This condition verifies if object is about to leave the screen, in which case it will be removed from the obstaclesArr array and score gets incremented by 1
-    if (element.x > 666) {
+    if (element.x < 5) {
       element.type!=='cloud'&&userScore++;
       obstaclesArr.splice(index, 1);
     };
@@ -195,12 +208,6 @@ const updateMovements = () => {
     const scoreStr = userScore.toString().padStart(5, '0');
     $score.text(scoreStr);
   });
-
-
-
-  /*
-    AFTER ALL MOVEMENTS, CHECK FOR COLLISION
-  */
 };
 
 const randomInterval = () => {
@@ -210,7 +217,7 @@ const randomInterval = () => {
 // Function that creates new Obstacle and pushes them into the obstacleArr array
 function addObstacles(){
   // Decide whether it's ufo or cactus that gets created, depending on random number generated form randomInterval function
-  const randomObstacle = randomInterval()<2000 ? new Obstacle('ufo') : new Obstacle('cactus')
+  const randomObstacle = randomInterval()>2800 ? new Obstacle('ufo') : new Obstacle('cactus');
 
   obstaclesArr.push(randomObstacle);
   obstaclesArr.push(new Obstacle('cloud'));
@@ -227,7 +234,6 @@ const init = () => {
 
   // Main game engine.
   gameLoop = setInterval(updateMovements, LOOP_INTERVAL);
-
   addObstacles();
 };
 
