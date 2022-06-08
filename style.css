@@ -1,3 +1,11 @@
+@keyframes animatedBackground {
+  from {
+    background-position: 0 0;
+  } to {
+    background-position: 100% 0;
+  }
+}
+
 body {
   overflow-x: hidden;
   margin: 0;
@@ -9,9 +17,11 @@ body {
   left: 50%;
   transform: translate(-50%, 50%);
   position: relative;
-  height: 388px;
-  width: 700px;
-  background-color: gray;
+  height: 288px;
+  width: 600px;
+  background-image: url(./assets/background-img.png);
+  background-position: 0px 0px;
+  animation: animatedBackground 8000ms linear infinite;
 }
 
 #character {
@@ -67,34 +77,3 @@ body {
 #message{
   font-size: 10px;
 }
-
-
-
-/*
-
-
-BACKGROUND ANIMATION
-
-
-
-@keyframes animatedBackground {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: 100% 0;
-  }
-}
-
-#animate-area {
-  width: 200px;
-  height: 200px;
-  background-image: url(http://placekitten.com/400/200);
-  background-position: 0px 0px;
-  background-repeat: repeat-x;
-  animation: animatedBackground 10s linear infinite;
-}
-
- */
-/* font-family: 'Press Start 2P', cursive; */

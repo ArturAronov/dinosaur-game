@@ -1,6 +1,4 @@
-const GAME_WIDTH = 388;
-const GAME_HEIGHT = 500;
-const CHARACTER_SIZE = 32;
+
 const CHARACTER_WIDTH = 32;
 const CHARACTER_HEIGHT = 42;
 const FPS = 60;
@@ -22,7 +20,6 @@ let parabolaVelocity = 5.5;
 // Obstacle objects will be stored here eventually for the duration of screen time
 const obstaclesArr = [];
 
-
 // User score
 let userScore = 0;
 
@@ -32,7 +29,7 @@ class Obstacle {
     this.type = type;
     this.speed = this.setSpeed()
     this.elementMovement = true;
-    this.x = 800;
+    this.x = 600;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
@@ -40,7 +37,6 @@ class Obstacle {
 
     // Appends the div into HTML
     this.append();
-
     this.width = Math.floor(this.$elem.width());
     this.height = Math.floor(this.$elem.height());
   };
@@ -59,7 +55,7 @@ class Obstacle {
   append() {
     // Appends new object into the HTML and updates the CSS values
     this.$elem.appendTo($gameScreen).css('bottom', this.y).css('left', this.x).css('font-size', this.size)
-  }
+  };
 
   updateX(){
     // Moves the obstacle on the x axis
