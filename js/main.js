@@ -1,4 +1,3 @@
-
 const CHARACTER_WIDTH = 29;
 const CHARACTER_HEIGHT = 48;
 const FPS = 60;
@@ -16,6 +15,7 @@ const $userScore = $('#user-score');
 const $highScore = $('#high-score');
 const $gameOver = $('#game-over');
 const $dinoSrc = $('#dino').attr('src');
+const $error = $('#error');
 
 let gameLoop;
 let dinoRunLoop;
@@ -27,9 +27,6 @@ let currentDinoSrc = $dinoSrc;
 const dinoStand ="./assets/dino-stand.png";
 const dinoRun1 = "./assets/dino-run1.png";
 const dinoRun2 = "./assets/dino-run2.png";
-
-//$character.attr('src', dinoRun1)
-
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground or in the air
 let parabolaVelocity = 5.5;
@@ -45,13 +42,12 @@ let userScore = 0;
 class Obstacle {
   constructor (type){
     this.type = type;
-    this.speed = this.setSpeed()
+    this.speed = this.setSpeed();
     this.elementMovement = true;
     this.x = 600;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
-    this.test =
     this.$elem = $(`<div class="obstacle ${this.type==='ufo'&&'ufo'}">${this.emoji}</div>`);
 
     // Appends the div into HTML
@@ -71,9 +67,21 @@ class Obstacle {
     };
   };
 
+
+  initialYAxis(){
+    // Gives each object the y axis
+    if(this.type === 'cactus'){
+      return 68;
+    }else if(this.type === 'cloud'){
+      return Math.floor(Math.random()*(258-158)+158);
+    }else if(this.type === 'ufo'){
+      return Math.floor(Math.random()*(155-85)+85);
+    };
+  };
+
   append() {
     // Appends new object into the HTML and updates the CSS values
-    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('left', this.x).css('font-size', this.size)
+    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('left', this.x).css('font-size', this.size);
   };
 
   updateX(){
@@ -105,17 +113,6 @@ class Obstacle {
     };
   };
 
-  initialYAxis(){
-    // Gives each object the y axis
-    if(this.type === 'cactus'){
-      return 70;
-    }else if(this.type === 'cloud'){
-      return Math.floor(Math.random()*(295-205)+205);
-    }else if(this.type === 'ufo'){
-      return Math.floor(Math.random()*(155-85)+85);
-    };
-  };
-
   obstacleMovement(){
     // Moves object on the y axis
     this.$elem.css('left', this.updateX());
@@ -130,7 +127,7 @@ class Obstacle {
 // Primary values for the character - y position and movement status
 let character = {
   position: {
-    y: 70,
+    y: 75,
     x: 30,
     height: CHARACTER_HEIGHT,
     width: CHARACTER_WIDTH,
@@ -141,9 +138,59 @@ let character = {
   }
 };
 
+function reset(index) {
+  // Reset all of the game's initial values
+  continueGame = false;       // Sets continue game to false
+  $(document).off('keydown')  // Removes the keydown event listener
+  clearInterval(dinoRunLoop); // Removes the dinosaur running loop
+  clearInterval(gameLoop);    // Stops the game loop
+  clearTimeout(objectCreationLoop);
+  obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
+  $('.obstacle').css('display', 'none');  // Hides obstacles display
+  $gameOver.css('display', 'flex');
+  $gameScreen.css('animation', 'none');
+  $(document).on('keydown', handleRestart);
+};
+
+function restart() {
+  // Clear off any pre-existing values in case game is run more than once
+  const highScoreStr = highScore.toString().padStart(5, '0');
+  $highScore.text('HI'+highScoreStr);
+  $gameOver.css('display', 'none');
+  $gameScreen.css('animation', 'animatedBackground 8000ms linear infinite');
+  userScore = 0;
+  obstaclesArr = [];
+  continueGame = true;
+  parabolaVelocity = 5.5;
+  gameLoop = null;
+  objectCreationLoop = null;
+};
+
+const handleError = () => {
+  // Since the game is using keyboard, this code will check if user device is mobile, in which case it will return an error message.
+  if( /Android|webOS|iPhone/i.test(navigator.userAgent) ) {
+   $gameScreen.detach();
+   $error.css('display', 'flex');
+  }else{
+    $error.css('display', 'none');
+    $('body').append($gameScreen);
+  };
+};
+
+$(window).resize(function(){
+  // Verify user's device on resize
+  handleError();
+});
+
+$(window).on('load', function(){
+  // Verify user's device on load
+  handleError();
+});
+
 const handleLegMovement = () => {
+  //Handle the image swaps to create an effect of dinosaur's legs moving while being on the ground
   currentDinoSrc = $('#dino').attr('src');
-  if (character.position.y === 70) {
+  if (character.position.y === 75) {
     if (currentDinoSrc === dinoStand) {
       $character.attr('src', dinoRun1);
     } else if (currentDinoSrc === dinoRun1){
@@ -165,7 +212,7 @@ const handleRestart = e => {
 
     character = {
       position: {
-        y: 70,
+        y: 75,
         x: 30,
         height: CHARACTER_HEIGHT,
         width: CHARACTER_WIDTH,
@@ -176,16 +223,6 @@ const handleRestart = e => {
       }
     };
 
-    const highScoreStr = highScore.toString().padStart(5, '0');
-    $highScore.text('HI'+highScoreStr);
-    $gameOver.css('display', 'none');
-    $gameScreen.css('animation', 'animatedBackground 8000ms linear infinite');
-    userScore = 0;
-    obstaclesArr = [];
-    continueGame = true;
-    parabolaVelocity = 5.5;
-    gameLoop = null;
-    objectCreationLoop = null
     init();
   };
 };
@@ -222,8 +259,6 @@ const updateMovements = () => {
   // Dynamically updated y coordinates
   let newY = y;
 
-
-  currentDinoSrc = $('#dino').attr('src');
   if (!down && up && newY < 205) {
     // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease parabola cure jumping speed
     parabolaVelocity -= 0.20;
@@ -240,7 +275,7 @@ const updateMovements = () => {
     newY -= (parabolaVelocity + VELOCITY);
   } else if (down && up && newY <= 70) {
     // Should the character be on the ground level, whilst he upwards and downwards trajectories are both active means the characters has completed round trip, hence all of the initial values get reset into original values.
-    newY = 70;
+    newY = 75;
     character.movement.up = false;
     character.movement.down = false;
   };
@@ -261,16 +296,7 @@ const updateMovements = () => {
         y < element.y + element.height &&
         height + y > element.y &&
         element.type !== 'cloud'){
-          continueGame = false;       // Sets continue game to false
-          $(document).off('keydown')  // Removes  the keydown event listener
-          clearInterval(dinoRunLoop);
-          clearInterval(gameLoop);    // Stops the game loop
-          clearTimeout(objectCreationLoop);
-          obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
-          $('.obstacle').css('display', 'none');  // Hides obstacles display
-          $gameOver.css('display', 'flex');
-          $gameScreen.css('animation', 'none')
-          $(document).on('keydown', handleRestart);
+          reset();
       };
 
     // This condition verifies if object is about to leave the screen, in which case it will be removed from the obstaclesArr array and score gets incremented by 1
@@ -306,6 +332,8 @@ function addObstacles(){
 
 
 const init = () => {
+  restart();
+
   // Event listener for the jumping command
   $(document).on('keydown', handleKeyDown);
 

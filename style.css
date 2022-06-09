@@ -45,7 +45,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Press Start 2P', monospace;
   gap: 18px
 }
 
@@ -75,6 +75,17 @@ body {
 #dino{
   height: 42px;
   position: absolute;
-  bottom: 70px;
+  bottom: 75px;
   left: 30px;
+}
+
+#error{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  line-height: 2em;
+  margin: 25px;
+  text-align: justify;
+  font-family: 'Press Start 2P', monospace;
 }
