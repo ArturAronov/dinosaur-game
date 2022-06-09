@@ -11,13 +11,24 @@ const CACTUS_SIZES = {
 };
 
 const $gameScreen = $('#game-screen');
-const $character = $('#character');
+const $character = $('#dino');
 const $userScore = $('#user-score');
 const $highScore = $('#high-score');
 const $gameOver = $('#game-over');
+const $dinoSrc = $('#dino').attr('src');
+
 let gameLoop;
+let dinoRunLoop;
 let objectCreationLoop;
 let continueGame = true;
+
+//  Images of running dinosaur
+let currentDinoSrc = $dinoSrc;
+const dinoStand ="./assets/dino-stand.png";
+const dinoRun1 = "./assets/dino-run1.png";
+const dinoRun2 = "./assets/dino-run2.png";
+
+//$character.attr('src', dinoRun1)
 
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground or in the air
@@ -130,14 +141,27 @@ let character = {
   }
 };
 
+const handleLegMovement = () => {
+  currentDinoSrc = $('#dino').attr('src');
+  if (character.position.y === 70) {
+    if (currentDinoSrc === dinoStand) {
+      $character.attr('src', dinoRun1);
+    } else if (currentDinoSrc === dinoRun1){
+      $character.attr('src', dinoRun2);
+    } else if(currentDinoSrc === dinoRun2) {
+      $character.attr('src', dinoRun1);
+    }
+  } else {
+    $character.attr('src', dinoRun1);
+  };
+};
+
 const handleRestart = e => {
   const {keyCode} = e;
   if(keyCode === 13) {
     if(userScore > highScore){
       highScore = userScore;
     };
-
-
 
     character = {
       position: {
@@ -198,6 +222,8 @@ const updateMovements = () => {
   // Dynamically updated y coordinates
   let newY = y;
 
+
+  currentDinoSrc = $('#dino').attr('src');
   if (!down && up && newY < 205) {
     // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease parabola cure jumping speed
     parabolaVelocity -= 0.20;
@@ -237,8 +263,9 @@ const updateMovements = () => {
         element.type !== 'cloud'){
           continueGame = false;       // Sets continue game to false
           $(document).off('keydown')  // Removes  the keydown event listener
+          clearInterval(dinoRunLoop);
           clearInterval(gameLoop);    // Stops the game loop
-          clearTimeout(objectCreationLoop)
+          clearTimeout(objectCreationLoop);
           obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
           $('.obstacle').css('display', 'none');  // Hides obstacles display
           $gameOver.css('display', 'flex');
@@ -283,6 +310,7 @@ const init = () => {
   $(document).on('keydown', handleKeyDown);
 
   // Main game engine.
+  dinoRunLoop = setInterval(handleLegMovement, 100)
   gameLoop = setInterval(updateMovements, LOOP_INTERVAL);
   addObstacles();
 };

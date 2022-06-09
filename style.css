@@ -24,38 +24,11 @@ body {
   animation: animatedBackground 8000ms linear infinite;
 }
 
-#character {
-  position: absolute;
-  display: inline-block;
-  font-size: 48px;
-
-  /* Flips the dinosaur horizontally due to original emoji is facing wrong direction */
-  -moz-transform: scale(-1, 1);
-  -webkit-transform: scale(-1, 1);
-  -o-transform: scale(-1, 1);
-  -ms-transform: scale(-1, 1);
-  transform: scale(-1, 1);
-
-  bottom: 70px;
-  left: 30px;
-  line-height: 80%;
-
-  text-indent: -0.2em;
-  letter-spacing: -0.2em;
-}
-
 .obstacle {
   position: absolute;
-  font-size: 48px;
   margin: 0;
   padding: 0;
-
-  /* Since there is a some amount of spacing around letters, the lines below are intended to remove all of the excess spacing */
-  line-height: 100%;
-  margin-left: -0.5em;
-  letter-spacing: -0.5em;
-  text-align: center;
-  text-indent: -0.1em;
+  font-size: 48px;
 }
 
 .ufo{
@@ -87,7 +60,7 @@ body {
   align-items: center;
   height: 288px;
   width: 600px;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Press Start 2P', monospace;
   font-size: 18px;
 }
 
@@ -99,6 +72,9 @@ body {
   font-size: 13px;
 }
 
-.sm-cactus{
-  height: 32px;
+#dino{
+  height: 42px;
+  position: absolute;
+  bottom: 70px;
+  left: 30px;
 }
