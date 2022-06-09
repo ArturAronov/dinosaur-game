@@ -12,7 +12,8 @@ const CACTUS_SIZES = {
 
 const $gameScreen = $('#game-screen');
 const $character = $('#character');
-const $score = $('#score');
+const $userScore = $('#user-score');
+const $highScore = $('#high-score');
 const $gameOver = $('#game-over');
 let gameLoop;
 let objectCreationLoop;
@@ -26,6 +27,7 @@ let parabolaVelocity = 5.5;
 let obstaclesArr = [];
 
 // User score
+let highScore = 0;
 let userScore = 0;
 
 // Class template for obstacles
@@ -128,6 +130,42 @@ let character = {
   }
 };
 
+const handleRestart = e => {
+  const {keyCode} = e;
+  if(keyCode === 13) {
+    if(userScore > highScore){
+      highScore = userScore;
+    };
+
+
+
+    character = {
+      position: {
+        y: 70,
+        x: 30,
+        height: CHARACTER_HEIGHT,
+        width: CHARACTER_WIDTH,
+      },
+      movement: {
+        up: false,
+        down: false
+      }
+    };
+
+    const highScoreStr = highScore.toString().padStart(5, '0');
+    $highScore.text('HI'+highScoreStr);
+    $gameOver.css('display', 'none');
+    $gameScreen.css('animation', 'animatedBackground 8000ms linear infinite');
+    userScore = 0;
+    obstaclesArr = [];
+    continueGame = true;
+    parabolaVelocity = 5.5;
+    gameLoop = null;
+    objectCreationLoop = null
+    init();
+  };
+};
+
 
 // Should user press space bar or arrow up button, the condition below will get executed.
 const handleKeyDown = e => {
@@ -142,6 +180,7 @@ const handleKeyUp = () => {
 };
 
 const updateMovements = () => {
+  $(document).off('keydown', handleRestart)
   // Character's object destructured
   const {
     position: {
@@ -196,12 +235,15 @@ const updateMovements = () => {
         y < element.y + element.height &&
         height + y > element.y &&
         element.type !== 'cloud'){
-          continueGame = false;     // Sets continue game to false
-          clearInterval(gameLoop);  // Stops the game loop
+          continueGame = false;       // Sets continue game to false
+          $(document).off('keydown')  // Removes  the keydown event listener
+          clearInterval(gameLoop);    // Stops the game loop
+          clearTimeout(objectCreationLoop)
           obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
           $('.obstacle').css('display', 'none');  // Hides obstacles display
           $gameOver.css('display', 'flex');
           $gameScreen.css('animation', 'none')
+          $(document).on('keydown', handleRestart);
       };
 
     // This condition verifies if object is about to leave the screen, in which case it will be removed from the obstaclesArr array and score gets incremented by 1
@@ -212,7 +254,7 @@ const updateMovements = () => {
 
     // Prints the score on to the screen given the 5 digit format with leading zeros, such as 00088
     const scoreStr = userScore.toString().padStart(5, '0');
-    $score.text(scoreStr);
+    $userScore.text(scoreStr);
   })
 };
 
@@ -230,7 +272,7 @@ function addObstacles(){
     obstaclesArr.push(new Obstacle('cloud'));
 
     // setTimeout function that creates infinite loop in order to generate new number value in randomInterval function so that obstacles come out at different times
-    setTimeout(addObstacles, randomInterval());
+    objectCreationLoop = setTimeout(addObstacles, randomInterval());
   };
 };
 

@@ -9,8 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <script type="text/javascript" src="./js/main.js" defer></script>
-  <script type="text/javascript" src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+  <script  type="module" src="./js/main.js"  type="module" defer></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
@@ -21,12 +20,21 @@
     </span>
     <div id="header">
       <div id="message">
-        press &ltspace&gt or ⬆️ to jump</div>
-        <div id="score"></div>
+        press &ltspace&gt or ⬆ to jump</div>
+        <div>
+          <span id="user-score"></span>
+          <span id="high-score"></span>
+        </div>
       </div>
     </div>
     <div id="game-over">
-      Game Over...
+      <div>
+        Game Over
+      </div>
+      <br/>
+      <div id="restart">
+        press &ltreturn&gt to restart
+      </div>
     </div>
   </main>
 </body>

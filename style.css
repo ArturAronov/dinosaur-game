@@ -38,7 +38,7 @@ body {
 
   bottom: 70px;
   left: 30px;
-  line-height: 100%;
+  line-height: 80%;
 
   text-indent: -0.2em;
   letter-spacing: -0.2em;
@@ -53,7 +53,7 @@ body {
   /* Since there is a some amount of spacing around letters, the lines below are intended to remove all of the excess spacing */
   line-height: 100%;
   margin-left: -0.5em;
-  letter-spacing: -0.1em;
+  letter-spacing: -0.5em;
   text-align: center;
   text-indent: -0.1em;
 }
@@ -82,10 +82,19 @@ body {
 
 #game-over{
   display: none;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 288px;
   width: 600px;
   font-family: 'Press Start 2P', cursive;
   font-size: 18px;
+}
+
+#restart{
+  font-size: 10px;
+}
+
+#user-score, #high-score {
+  font-size: 13px;
 }
