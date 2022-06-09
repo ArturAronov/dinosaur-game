@@ -5,9 +5,9 @@ const FPS = 60;
 const LOOP_INTERVAL = Math.round(1000 / FPS);
 const VELOCITY = 2.5;
 const CACTUS_SIZES = {
-  0: 30,
-  1: 45,
-  2: 40,
+  0: 32,
+  1: 42,
+  2: 52,
 };
 
 const $gameScreen = $('#game-screen');
@@ -40,6 +40,7 @@ class Obstacle {
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
+    this.test =
     this.$elem = $(`<div class="obstacle ${this.type==='ufo'&&'ufo'}">${this.emoji}</div>`);
 
     // Appends the div into HTML
@@ -70,12 +71,24 @@ class Obstacle {
     return this.x;
   };
 
+  obstacleSize(){
+    // Gives each object its size
+    if(this.type==='cactus'){
+      const randomSize = Math.floor(Math.random()*(3-0)+0);
+      return CACTUS_SIZES[randomSize];
+    }else if(this.type === 'cloud'){
+      return 32;
+    }else if(this.type === 'ufo'){
+      return 48;
+    };
+  };
+
   setEmoji(){
     // Obstacle image
     if(this.type === 'ufo'){
       return '🛸';
     }else if(this.type === 'cactus'){
-      return '🌵';
+      return `<img style='height: ${this.size}px' src='./assets/cactus.png'></img>`;
     } else if(this.type === 'cloud'){
       return '☁️';
     };
@@ -91,19 +104,6 @@ class Obstacle {
       return Math.floor(Math.random()*(155-85)+85);
     };
   };
-
-  obstacleSize(){
-    // Gives each object its size
-    if(this.type==='cactus'){
-      const randomSize = Math.floor(Math.random()*(3-0)+0);
-      return CACTUS_SIZES[randomSize];
-    }else if(this.type === 'cloud'){
-      return 32;
-    }else if(this.type === 'ufo'){
-      return 48;
-    };
-  };
-
 
   obstacleMovement(){
     // Moves object on the y axis

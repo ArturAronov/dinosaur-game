@@ -98,3 +98,7 @@ body {
 #user-score, #high-score {
   font-size: 13px;
 }
+
+.sm-cactus{
+  height: 32px;
+}
