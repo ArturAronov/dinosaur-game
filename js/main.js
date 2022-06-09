@@ -1,6 +1,6 @@
 
-const CHARACTER_WIDTH = 32;
-const CHARACTER_HEIGHT = 42;
+const CHARACTER_WIDTH = 29;
+const CHARACTER_HEIGHT = 48;
 const FPS = 60;
 const LOOP_INTERVAL = Math.round(1000 / FPS);
 const VELOCITY = 2.5;
@@ -13,12 +13,17 @@ const CACTUS_SIZES = {
 const $gameScreen = $('#game-screen');
 const $character = $('#character');
 const $score = $('#score');
+const $gameOver = $('#game-over');
+let gameLoop;
+let objectCreationLoop;
+let continueGame = true;
+
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground or in the air
 let parabolaVelocity = 5.5;
 
 // Obstacle objects will be stored here eventually for the duration of screen time
-const obstaclesArr = [];
+let obstaclesArr = [];
 
 // User score
 let userScore = 0;
@@ -191,7 +196,12 @@ const updateMovements = () => {
         y < element.y + element.height &&
         height + y > element.y &&
         element.type !== 'cloud'){
-          console.log('oops');
+          continueGame = false;     // Sets continue game to false
+          clearInterval(gameLoop);  // Stops the game loop
+          obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
+          $('.obstacle').css('display', 'none');  // Hides obstacles display
+          $gameOver.css('display', 'flex');
+          $gameScreen.css('animation', 'none')
       };
 
     // This condition verifies if object is about to leave the screen, in which case it will be removed from the obstaclesArr array and score gets incremented by 1
@@ -203,7 +213,7 @@ const updateMovements = () => {
     // Prints the score on to the screen given the 5 digit format with leading zeros, such as 00088
     const scoreStr = userScore.toString().padStart(5, '0');
     $score.text(scoreStr);
-  });
+  })
 };
 
 const randomInterval = () => {
@@ -212,14 +222,16 @@ const randomInterval = () => {
 
 // Function that creates new Obstacle and pushes them into the obstacleArr array
 function addObstacles(){
-  // Decide whether it's ufo or cactus that gets created, depending on random number generated form randomInterval function
-  const randomObstacle = randomInterval()>2800 ? new Obstacle('ufo') : new Obstacle('cactus');
+  if(continueGame){
+    // Decide whether it's ufo or cactus that gets created, depending on random number generated form randomInterval function
+    const randomObstacle = randomInterval()>2800 ? new Obstacle('ufo') : new Obstacle('cactus');
 
-  obstaclesArr.push(randomObstacle);
-  obstaclesArr.push(new Obstacle('cloud'));
+    obstaclesArr.push(randomObstacle);
+    obstaclesArr.push(new Obstacle('cloud'));
 
-  // setTimeout function that creates infinite loop in order to generate new number value in randomInterval function so that obstacles come out at different times
-  setTimeout(addObstacles, randomInterval());
+    // setTimeout function that creates infinite loop in order to generate new number value in randomInterval function so that obstacles come out at different times
+    setTimeout(addObstacles, randomInterval());
+  };
 };
 
 

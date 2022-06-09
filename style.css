@@ -39,6 +39,9 @@ body {
   bottom: 70px;
   left: 30px;
   line-height: 100%;
+
+  text-indent: -0.2em;
+  letter-spacing: -0.2em;
 }
 
 .obstacle {
@@ -46,7 +49,6 @@ body {
   font-size: 48px;
   margin: 0;
   padding: 0;
-
 
   /* Since there is a some amount of spacing around letters, the lines below are intended to remove all of the excess spacing */
   line-height: 100%;
@@ -76,4 +78,14 @@ body {
 
 #message{
   font-size: 10px;
+}
+
+#game-over{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 288px;
+  width: 600px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
 }
