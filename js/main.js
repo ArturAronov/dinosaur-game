@@ -1,37 +1,4 @@
-const CHARACTER_WIDTH = 29;
-const CHARACTER_HEIGHT = 48;
-const FPS = 60;
-const DINO_INITIAL_Y = 75;
-const DINO_INITIAL_X = 30;
-const DINO_MAX_Y = 205;
-const LOOP_INTERVAL = Math.round(1000 / FPS);
-const VELOCITY = 2.5;
-const RANDOM_INTERVAL_MIN = 1000;
-const RANDOM_INTERVAL_MAX = 3000;
-const MIN_SCREEN = 650;
-const OBSTACLE_X = 600;
-const CACTUS_Y = 68;
-const SIZE_S = 32;
-const SIZE_M = 42;
-const SIZE_L = 52;
-const KEYCODE_UP = 38;
-const KEYCODE_SPACE = 32;
-const KEYCODE_RETURN = 13;
-const DINO_STAND ="./assets/dino-stand.png";
-const DINO_RUN_1 = "./assets/dino-run1.png";
-const DINO_RUN_2 = "./assets/dino-run2.png";
-const $GAME_SCREEN = $('#game-screen');
-const $CHARACTER = $('#dino');
-const $USER_SCORE = $('#user-score');
-const $HIGH_SCORE = $('#high-score');
-const $GAME_OVER = $('#game-over');
-const $DINO_SRC = $('#dino').attr('src');
-const $ERROR = $('#error');
-const CACTUS_SIZES = {
-  0: SIZE_S,
-  1: SIZE_M,
-  2: SIZE_L,
-};
+import {CHARACTER_WIDTH, CHARACTER_HEIGHT, FPS, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, OBSTACLE_X, CACTUS_Y, SIZE_S, SIZE_M, SIZE_L, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR, CACTUS_SIZES} from './global_variables.js'
 
 let gameLoop;
 let dinoRunLoop;
