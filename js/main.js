@@ -150,6 +150,9 @@ function reset(index) {
   $gameOver.css('display', 'flex');
   $gameScreen.css('animation', 'none');
   $(document).on('keydown', handleRestart);
+
+  $character.css('bottom', 75);
+  $character.css('transform', 'rotate(45deg)');
 };
 
 function restart() {
@@ -157,6 +160,7 @@ function restart() {
   const highScoreStr = highScore.toString().padStart(5, '0');
   $highScore.text('HI'+highScoreStr);
   $gameOver.css('display', 'none');
+  $character.css('transform', 'rotate(0deg)');
   $gameScreen.css('animation', 'animatedBackground 8000ms linear infinite');
   userScore = 0;
   obstaclesArr = [];
