@@ -1,5 +1,5 @@
 import {CHARACTER_WIDTH, CHARACTER_HEIGHT, FPS, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR} from './global_variables.js';
-import {Obstacle} from './obstacle_class.js'
+import {Obstacle} from './obstacle_class.js';
 
 let gameLoop;
 let dinoRunLoop;
