@@ -13,4 +13,4 @@ The inspiration comes from [T-Rex Chrome Dino Game](https://chromedino.com/), de
 [Unit 1 Project](https://arturaronov.github.io/project1-dinosaur-game/)
 
 ### Initial design deck
-<img src="./assets/specifications_final.png" alt="" style="height: 100px; width:100px;"/>
+<img src="./assets/specifications_final.png" alt="Artur Aronov Unit 1 Project Specifications" />
