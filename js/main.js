@@ -1,4 +1,4 @@
-import {CHARACTER_WIDTH, CHARACTER_HEIGHT, FPS, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR} from './global_variables.js';
+import {CHARACTER_WIDTH, CHARACTER_HEIGHT, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR} from './global_variables.js';
 import {Obstacle} from './obstacle_class.js';
 
 let gameLoop;
@@ -34,7 +34,7 @@ let character = {
   }
 };
 
-function reset(index) {
+const reset = index => {
   // Reset all of the game's initial values
   continueGame = false;       // Sets continue game to false
   $(document).off('keydown')  // Removes the keydown event listener
@@ -51,7 +51,7 @@ function reset(index) {
   $CHARACTER.css('transform', 'rotate(45deg)');
 };
 
-function restart() {
+const restart = () =>{
   // Clear off any pre-existing values in case game is run more than once
   const highScoreStr = highScore.toString().padStart(5, '0');
   $HIGH_SCORE.text('HI'+highScoreStr);
@@ -225,7 +225,7 @@ const randomInterval = () => {
 };
 
 // Function that creates new Obstacle and pushes them into the obstacleArr array
-function addObstacles(){
+const addObstacles = () => {
   if(continueGame){
     // Decide whether it's ufo or cactus that gets created, depending on random number generated form randomInterval function
     const randomObstacle = randomInterval()>2800 ? new Obstacle('ufo') : new Obstacle('cactus');
@@ -237,8 +237,6 @@ function addObstacles(){
     objectCreationLoop = setTimeout(addObstacles, randomInterval());
   };
 };
-
-
 
 const init = () => {
   restart();
