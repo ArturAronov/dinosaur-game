@@ -1,4 +1,5 @@
-import {CHARACTER_WIDTH, CHARACTER_HEIGHT, FPS, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, OBSTACLE_X, CACTUS_Y, SIZE_S, SIZE_M, SIZE_L, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR, CACTUS_SIZES} from './global_variables.js'
+import {CHARACTER_WIDTH, CHARACTER_HEIGHT, FPS, DINO_INITIAL_Y, DINO_INITIAL_X, DINO_MAX_Y, LOOP_INTERVAL, VELOCITY, RANDOM_INTERVAL_MIN, RANDOM_INTERVAL_MAX, MIN_SCREEN, KEYCODE_UP, KEYCODE_SPACE, KEYCODE_RETURN, DINO_STAND, DINO_RUN_1, DINO_RUN_2, $GAME_SCREEN, $CHARACTER, $USER_SCORE, $HIGH_SCORE, $GAME_OVER, $DINO_SRC, $ERROR} from './global_variables.js';
+import {Obstacle} from './obstacle_class.js'
 
 let gameLoop;
 let dinoRunLoop;
@@ -17,91 +18,7 @@ let obstaclesArr = [];
 let highScore = 0;
 let userScore = 0;
 
-// Class template for obstacles
-class Obstacle {
-  constructor (type){
-    this.type = type;
-    this.speed = this.setSpeed();
-    this.elementMovement = true;
-    this.x = OBSTACLE_X;
-    this.y = this.initialYAxis();
-    this.size = this.obstacleSize();
-    this.emoji = this.setEmoji();
-    this.$elem = $(`<div class="obstacle ${this.type==='ufo'&&'ufo'}">${this.emoji}</div>`);
 
-    // Appends the div into HTML
-    this.append();
-    this.width = Math.floor(this.$elem.width());
-    this.height = Math.floor(this.$elem.height());
-  };
-
-  setSpeed() {
-    // Gives each obstacle type a moving speed
-    if (this.type === 'ufo') {
-      return 1.5;
-    } else if (this.type === 'cloud'){
-      return 0.5;
-    } else {
-      return 1;
-    };
-  };
-
-
-  initialYAxis(){
-    // Gives each object the y axis
-    if(this.type === 'cactus'){
-      return CACTUS_Y;
-    }else if(this.type === 'cloud'){
-      return Math.floor(Math.random()*(258-158)+158);
-    }else if(this.type === 'ufo'){
-      return Math.floor(Math.random()*(155-85)+85);
-    };
-  };
-
-  append() {
-    // Appends new object into the HTML and updates the CSS values
-    this.$elem.appendTo($GAME_SCREEN).css('bottom', this.y).css('left', this.x).css('font-size', this.size);
-  };
-
-  updateX(){
-    // Moves the obstacle on the x axis
-    this.x = this.x - (VELOCITY * this.speed);
-    return this.x;
-  };
-
-  obstacleSize(){
-    // Gives each object its size
-    if(this.type==='cactus'){
-      const randomSize = Math.floor(Math.random()*(3-0)+0);
-      return CACTUS_SIZES[randomSize];
-    }else if(this.type === 'cloud'){
-      return SIZE_S;
-    }else if(this.type === 'ufo'){
-      return SIZE_M;
-    };
-  };
-
-  setEmoji(){
-    // Obstacle image
-    if(this.type === 'ufo'){
-      return '🛸';
-    }else if(this.type === 'cactus'){
-      return `<img style='height: ${this.size}px' src='./assets/cactus.png'/>`;
-    } else if(this.type === 'cloud'){
-      return '☁️';
-    };
-  };
-
-  obstacleMovement(){
-    // Moves object on the y axis
-    this.$elem.css('left', this.updateX());
-
-    // Removes object from the HTML should it get out of screen
-    if(this.x<5){
-      this.$elem.remove();
-    };
-  };
-};
 
 // Primary values for the character - y position and movement status
 let character = {
