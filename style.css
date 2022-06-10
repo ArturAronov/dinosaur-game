@@ -9,7 +9,6 @@
 body {
   overflow-x: hidden;
   margin: 0;
-  user-select: none;
 }
 
 #game-screen {
@@ -22,6 +21,7 @@ body {
   background-image: url(./assets/background-img.png);
   background-position: 0px 0px;
   animation: animatedBackground 8000ms linear infinite;
+  user-select: none;
 }
 
 .obstacle {
