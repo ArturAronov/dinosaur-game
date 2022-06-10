@@ -81,11 +81,6 @@ body {
 
 #error{
   display: none;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   line-height: 2em;
   margin: 25px;
-  text-align: justify;
-  font-family: 'Press Start 2P', monospace;
 }

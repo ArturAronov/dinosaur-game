@@ -170,8 +170,8 @@ const handleError = () => {
   // Since the game is using keyboard, this code will check if user device is mobile, in which case it will return an error message.
   if( /Android|webOS|iPhone/i.test(navigator.userAgent) ) {
    $gameScreen.detach();
-   $error.css('display', 'flex');
-  }else{
+   $error.css('display', 'block ');
+  } else {
     $error.css('display', 'none');
     $('body').append($gameScreen);
   };
@@ -180,11 +180,20 @@ const handleError = () => {
 $(window).resize(function(){
   // Verify user's device on resize
   handleError();
+  if($(window).width() < 650){
+    $gameScreen.detach();
+    $error.css('display', 'block');
+  };
 });
+
 
 $(window).on('load', function(){
   // Verify user's device on load
   handleError();
+  if($(window).width() < 650){
+    $gameScreen.detach();
+    $error.css('display', 'block');
+  };
 });
 
 const handleLegMovement = () => {
