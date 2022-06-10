@@ -1,32 +1,44 @@
 const CHARACTER_WIDTH = 29;
 const CHARACTER_HEIGHT = 48;
 const FPS = 60;
+const DINO_INITIAL_Y = 75;
+const DINO_INITIAL_X = 30;
+const DINO_MAX_Y = 205;
 const LOOP_INTERVAL = Math.round(1000 / FPS);
 const VELOCITY = 2.5;
+const RANDOM_INTERVAL_MIN = 1000;
+const RANDOM_INTERVAL_MAX = 3000;
+const MIN_SCREEN = 650;
+const OBSTACLE_X = 600;
+const CACTUS_Y = 68;
+const SIZE_S = 32;
+const SIZE_M = 42;
+const SIZE_L = 52;
+const KEYCODE_UP = 38;
+const KEYCODE_SPACE = 32;
+const KEYCODE_RETURN = 13;
+const DINO_STAND ="./assets/dino-stand.png";
+const DINO_RUN_1 = "./assets/dino-run1.png";
+const DINO_RUN_2 = "./assets/dino-run2.png";
+const $GAME_SCREEN = $('#game-screen');
+const $CHARACTER = $('#dino');
+const $USER_SCORE = $('#user-score');
+const $HIGH_SCORE = $('#high-score');
+const $GAME_OVER = $('#game-over');
+const $DINO_SRC = $('#dino').attr('src');
+const $ERROR = $('#error');
 const CACTUS_SIZES = {
-  0: 32,
-  1: 42,
-  2: 52,
+  0: SIZE_S,
+  1: SIZE_M,
+  2: SIZE_L,
 };
-
-const $gameScreen = $('#game-screen');
-const $character = $('#dino');
-const $userScore = $('#user-score');
-const $highScore = $('#high-score');
-const $gameOver = $('#game-over');
-const $dinoSrc = $('#dino').attr('src');
-const $error = $('#error');
 
 let gameLoop;
 let dinoRunLoop;
 let objectCreationLoop;
 let continueGame = true;
+let currentDinoSrc = $DINO_SRC;
 
-//  Images of running dinosaur
-let currentDinoSrc = $dinoSrc;
-const dinoStand ="./assets/dino-stand.png";
-const dinoRun1 = "./assets/dino-run1.png";
-const dinoRun2 = "./assets/dino-run2.png";
 
 // Character's jumping velocity acceleration / deceleration depending whether the character is on the ground or in the air
 let parabolaVelocity = 5.5;
@@ -44,7 +56,7 @@ class Obstacle {
     this.type = type;
     this.speed = this.setSpeed();
     this.elementMovement = true;
-    this.x = 600;
+    this.x = OBSTACLE_X;
     this.y = this.initialYAxis();
     this.size = this.obstacleSize();
     this.emoji = this.setEmoji();
@@ -71,7 +83,7 @@ class Obstacle {
   initialYAxis(){
     // Gives each object the y axis
     if(this.type === 'cactus'){
-      return 68;
+      return CACTUS_Y;
     }else if(this.type === 'cloud'){
       return Math.floor(Math.random()*(258-158)+158);
     }else if(this.type === 'ufo'){
@@ -81,7 +93,7 @@ class Obstacle {
 
   append() {
     // Appends new object into the HTML and updates the CSS values
-    this.$elem.appendTo($gameScreen).css('bottom', this.y).css('left', this.x).css('font-size', this.size);
+    this.$elem.appendTo($GAME_SCREEN).css('bottom', this.y).css('left', this.x).css('font-size', this.size);
   };
 
   updateX(){
@@ -96,9 +108,9 @@ class Obstacle {
       const randomSize = Math.floor(Math.random()*(3-0)+0);
       return CACTUS_SIZES[randomSize];
     }else if(this.type === 'cloud'){
-      return 32;
+      return SIZE_S;
     }else if(this.type === 'ufo'){
-      return 48;
+      return SIZE_M;
     };
   };
 
@@ -107,7 +119,7 @@ class Obstacle {
     if(this.type === 'ufo'){
       return '🛸';
     }else if(this.type === 'cactus'){
-      return `<img style='height: ${this.size}px' src='./assets/cactus.png'></img>`;
+      return `<img style='height: ${this.size}px' src='./assets/cactus.png'/>`;
     } else if(this.type === 'cloud'){
       return '☁️';
     };
@@ -127,8 +139,8 @@ class Obstacle {
 // Primary values for the character - y position and movement status
 let character = {
   position: {
-    y: 75,
-    x: 30,
+    y: DINO_INITIAL_Y,
+    x: DINO_INITIAL_X,
     height: CHARACTER_HEIGHT,
     width: CHARACTER_WIDTH,
   },
@@ -147,21 +159,21 @@ function reset(index) {
   clearTimeout(objectCreationLoop);
   obstaclesArr.splice(index, obstaclesArr.length-1);  // Clears obstacle arr
   $('.obstacle').css('display', 'none');  // Hides obstacles display
-  $gameOver.css('display', 'flex');
-  $gameScreen.css('animation', 'none');
+  $GAME_OVER.css('display', 'flex');
+  $GAME_SCREEN.css('animation', 'none');
   $(document).on('keydown', handleRestart);
 
-  $character.css('bottom', 75);
-  $character.css('transform', 'rotate(45deg)');
+  $CHARACTER.css('bottom', DINO_INITIAL_Y);
+  $CHARACTER.css('transform', 'rotate(45deg)');
 };
 
 function restart() {
   // Clear off any pre-existing values in case game is run more than once
   const highScoreStr = highScore.toString().padStart(5, '0');
-  $highScore.text('HI'+highScoreStr);
-  $gameOver.css('display', 'none');
-  $character.css('transform', 'rotate(0deg)');
-  $gameScreen.css('animation', 'animatedBackground 8000ms linear infinite');
+  $HIGH_SCORE.text('HI'+highScoreStr);
+  $GAME_OVER.css('display', 'none');
+  $CHARACTER.css('transform', 'rotate(0deg)');
+  $GAME_SCREEN.css('animation', 'animatedBackground 8000ms linear infinite');
   userScore = 0;
   obstaclesArr = [];
   continueGame = true;
@@ -173,20 +185,20 @@ function restart() {
 const handleError = () => {
   // Since the game is using keyboard, this code will check if user device is mobile, in which case it will return an error message.
   if( /Android|webOS|iPhone/i.test(navigator.userAgent) ) {
-   $gameScreen.detach();
-   $error.css('display', 'block ');
+   $GAME_SCREEN.detach();
+   $ERROR.css('display', 'block ');
   } else {
-    $error.css('display', 'none');
-    $('body').append($gameScreen);
+    $ERROR.css('display', 'none');
+    $('body').append($GAME_SCREEN);
   };
 };
 
 $(window).resize(function(){
   // Verify user's device on resize
   handleError();
-  if($(window).width() < 650){
-    $gameScreen.detach();
-    $error.css('display', 'block');
+  if($(window).width() < MIN_SCREEN){
+    $GAME_SCREEN.detach();
+    $ERROR.css('display', 'block');
   };
 });
 
@@ -194,39 +206,39 @@ $(window).resize(function(){
 $(window).on('load', function(){
   // Verify user's device on load
   handleError();
-  if($(window).width() < 650){
-    $gameScreen.detach();
-    $error.css('display', 'block');
+  if($(window).width() < MIN_SCREEN){
+    $GAME_SCREEN.detach();
+    $ERROR.css('display', 'block');
   };
 });
 
 const handleLegMovement = () => {
   //Handle the image swaps to create an effect of dinosaur's legs moving while being on the ground
   currentDinoSrc = $('#dino').attr('src');
-  if (character.position.y === 75) {
-    if (currentDinoSrc === dinoStand) {
-      $character.attr('src', dinoRun1);
-    } else if (currentDinoSrc === dinoRun1){
-      $character.attr('src', dinoRun2);
-    } else if(currentDinoSrc === dinoRun2) {
-      $character.attr('src', dinoRun1);
+  if (character.position.y === DINO_INITIAL_Y) {
+    if (currentDinoSrc === DINO_STAND) {
+      $CHARACTER.attr('src', DINO_RUN_1);
+    } else if (currentDinoSrc === DINO_RUN_1){
+      $CHARACTER.attr('src', DINO_RUN_2);
+    } else if(currentDinoSrc === DINO_RUN_2) {
+      $CHARACTER.attr('src', DINO_RUN_1);
     }
   } else {
-    $character.attr('src', dinoRun1);
+    $CHARACTER.attr('src', DINO_RUN_1);
   };
 };
 
 const handleRestart = e => {
   const {keyCode} = e;
-  if(keyCode === 13) {
+  if(keyCode === KEYCODE_RETURN) {
     if(userScore > highScore){
       highScore = userScore;
     };
 
     character = {
       position: {
-        y: 75,
-        x: 30,
+        y: DINO_INITIAL_Y,
+        x: DINO_INITIAL_X,
         height: CHARACTER_HEIGHT,
         width: CHARACTER_WIDTH,
       },
@@ -244,7 +256,7 @@ const handleRestart = e => {
 // Should user press space bar or arrow up button, the condition below will get executed.
 const handleKeyDown = e => {
   const {keyCode} = e;
-  if(keyCode === 38 || keyCode === 32){
+  if(keyCode === KEYCODE_UP || keyCode === KEYCODE_SPACE){
     character.movement.up = true;
   };
 };
@@ -272,30 +284,30 @@ const updateMovements = () => {
   // Dynamically updated y coordinates
   let newY = y;
 
-  if (!down && up && newY < 205) {
+  if (!down && up && newY < DINO_MAX_Y) {
     // Verify if y coordinates are below maximum and if current characters trajectory is upwards to update upwards y coordinates and decrease parabola cure jumping speed
     parabolaVelocity -= 0.20;
     newY += (parabolaVelocity + VELOCITY)
-  } else if (!down && newY >= 205) {
+  } else if (!down && newY >= DINO_MAX_Y) {
     // Verify if y trajectory has reached its maximum height to stall the character temporarily midair, then set character for downwards trajectory
-    newY = 205;
+    newY = DINO_MAX_Y;
     setTimeout(()=>{
       character.movement.down = true;
     }, 50);
-  } else if (down && up && y>70) {
+  } else if (down && up && y > DINO_INITIAL_Y) {
     // Should the character be on the downwards trajectory, update the y trajectory and increase parabola cure falling speed.
     parabolaVelocity += 0.20;
     newY -= (parabolaVelocity + VELOCITY);
-  } else if (down && up && newY <= 70) {
+  } else if (down && up && newY <= DINO_INITIAL_Y) {
     // Should the character be on the ground level, whilst he upwards and downwards trajectories are both active means the characters has completed round trip, hence all of the initial values get reset into original values.
-    newY = 75;
+    newY = DINO_INITIAL_Y;
     character.movement.up = false;
     character.movement.down = false;
   };
 
   // CSS updates for character coordinates.
   character.position.y = newY;
-  $character.css('bottom', newY);
+  $CHARACTER.css('bottom', newY);
 
   // Loops over the obstaclesArr array to modify the obstacle objects
   obstaclesArr.forEach((element, index) => {
@@ -320,12 +332,12 @@ const updateMovements = () => {
 
     // Prints the score on to the screen given the 5 digit format with leading zeros, such as 00088
     const scoreStr = userScore.toString().padStart(5, '0');
-    $userScore.text(scoreStr);
+    $USER_SCORE.text(scoreStr);
   })
 };
 
 const randomInterval = () => {
-  return Math.floor(Math.random()*(3000-1000)+1000)
+  return Math.floor(Math.random()*(RANDOM_INTERVAL_MAX-RANDOM_INTERVAL_MIN)+RANDOM_INTERVAL_MIN)
 };
 
 // Function that creates new Obstacle and pushes them into the obstacleArr array
